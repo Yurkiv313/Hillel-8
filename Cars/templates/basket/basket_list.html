@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>BASKET 333</h1>
+     {% for order in orders %}
+            <li>
+                Car: {{ order.car.car_type.brand }} {{ order.car.car_type.name }} color: {{ order.car.color }}, year: {{ order.car.year }} Owner:{{ order.car.owner }}
+            </li>
+     {% endfor %}
+</body>
+</html>

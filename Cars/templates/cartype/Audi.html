@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Audi</title>
+</head>
+<body>
+    <ul>
+        {% for cartype in cartypes %}
+            {% if cartype.brand == "Audi" %}
+                <li>
+                    <a href="{% url 'car_edit' cartype.id %}">ID {{ cartype.id }}</a>
+                    Brand: {{ cartype.brand }}, Models: {{ cartype.name }}, Prise: {{ cartype.price }}$
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</body>
+</html>

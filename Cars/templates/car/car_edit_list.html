@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <button onclick="location.href='/basket'">Basket</button>
+    <ul>
+        {% for car in cars %}
+            <li>
+                Car: {{ car.car_type.brand }} {{ car.car_type.name }} color: {{ car.color }}, year: {{ car.year }} Owner:{{ car.owner }} Price: {{ car.car_type.price }}$
+                <a href="{% url 'create_order' car.id %}">Add to basket</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
