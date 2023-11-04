@@ -11,8 +11,7 @@ urlpatterns = [
     path("car_edit/<int:pk>", views.car_edit, name="car_edit"),
     path("create_order/<int:pk>", views.create_order, name="create_order"),
     path("basket/", views.basket, name="basket"),
-    # path("order/<int:pk>", views.create_order, name="create_order"),
-
-    # path("form/", views.order_form, name="order_form"),
-    # path("quantityform/", views.order_quantity_form, name="order_quantity_form"),
+    path("order_cancel/", views.order_cancel, name="order_cancel"),
+    path("order_confirm/", views.order_confirm, name="order_confirm"),
+    path("redi/", views.redi, name="redi"),
 ]

@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>Hello</title>
     <style>
+        body{
+            background: bisque;
+        }
         h1,h2{
             display: flex;
             justify-content: center;
@@ -13,6 +16,18 @@
         }
         ul,button{
             text-align: center;
+        }
+        button{
+            text-align: right;
+            color: black;
+            background: cadetblue;
+        }
+        div{
+            justify-content: center;
+        }
+        #basket{
+            color: white;
+            background: navy;
         }
     </style>
 </head>
@@ -24,6 +39,9 @@
         <button onclick="location.href='audict/'">View AUDI</button>
         <button onclick="location.href='bmwct/'">View BMW</button>
         <button onclick="location.href='mercedesct/'">View MERCEDES-BENZ</button>
+    </ul>
+    <ul>
+        <button id="basket" onclick="location.href='/basket'">Basket</button>
     </ul>
 </body>
 </html>

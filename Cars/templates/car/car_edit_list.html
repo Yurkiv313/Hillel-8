@@ -4,15 +4,39 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body>
-    <button onclick="location.href='/basket'">Basket</button>
-    <ul>
-        {% for car in cars %}
-            <li>
-                Car: {{ car.car_type.brand }} {{ car.car_type.name }} color: {{ car.color }}, year: {{ car.year }} Owner:{{ car.owner }} Price: {{ car.car_type.price }}$
-                <a href="{% url 'create_order' car.id %}">Add to basket</a>
-            </li>
-        {% endfor %}
-    </ul>
-</body>
+    <style>
+    body{
+        background: bisque;
+    }
+    button{
+        text-align: right;
+        color: black;
+        background: cadetblue;
+    }
+    #basket{
+        color: white;
+        background: navy;
+        }
+    </style>
+    <div>
+        <button id="basket" onclick="location.href='/basket'">Basket</button>
+    </div>
+    <div>
+        <ul>
+            {% for car in cars %}
+                <li>
+                    Car: {{ car.car_type.brand }} {{ car.car_type.name }} color: {{ car.color }}, year: {{ car.year }} Owner:{{ car.owner }} Price: {{ car.car_type.price }}$
+                    <a href="{% url 'create_order' car.id %}">Add to basket</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+        {% if car.car_type.brand in cars == "Audi" %}
+            <button onclick="location.href='/audict/'">Назад</button>
+        {% elif car.car_type.brand in cars == "Mercedes-Benz" %}
+            <button onclick="location.href='/mercedesct/'">Назад</button>
+        {% else %}
+            <button onclick="location.href='/bmwct/'">Назад</button>
+        {% endif %}
+    </body>
 </html>

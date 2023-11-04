@@ -4,12 +4,29 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<style>
+        body{
+            background: bisque;
+        }
+        button{
+            text-align: right;
+            color: black;
+            background: cadetblue;
+        }
+    </style>
 <body>
-    <h1>BASKET 333</h1>
-     {% for order in orders %}
+    <div>
+        <h1>BASKET</h1>
+        {% for car in cars %}
             <li>
-                Car: {{ order.car.car_type.brand }} {{ order.car.car_type.name }} color: {{ order.car.color }}, year: {{ order.car.year }} Owner:{{ order.car.owner }}
+                Car: {{ car.car_type.brand }} {{ car.car_type.name }} color: {{ car.color }}, year: {{ car.year }} Owner:{{ car.owner }}
             </li>
-     {% endfor %}
+        {% endfor %}
+    </div>
+    <div>
+        <button onclick="location.href='/order_cancel/'">Скасувати замовлення</button>
+        <button onclick="location.href='/order_confirm/'">Оплатити замовлення</button>
+        <button onclick="location.href='/redi/'">Повернутися на головну</button>
+    </div>
 </body>
 </html>

@@ -4,7 +4,23 @@
     <meta charset="UTF-8">
     <title>BMW</title>
 </head>
-<body>
+<style>
+        body{
+            background: bisque;
+        }
+        button{
+            text-align: right;
+            color: black;
+            background: cadetblue;
+        }
+        #basket{
+            color: white;
+            background: navy;
+        }
+    </style>
+    <div>
+        <button id="basket" onclick="location.href='/basket'">Basket</button>
+    </div>
     <ul>
         {% for cartype in cartypes %}
             {% if cartype.brand == "BMW" %}
@@ -15,5 +31,6 @@
             {% endif %}
         {% endfor %}
     </ul>
+    <button onclick="location.href='/redi/'">Назад</button>
 </body>
 </html>
