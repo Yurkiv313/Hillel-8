@@ -23,20 +23,20 @@
     </div>
     <div>
         <ul>
-            {% for car in cars %}
-                <li>
-                    Car: {{ car.car_type.brand }} {{ car.car_type.name }} color: {{ car.color }}, year: {{ car.year }} Owner:{{ car.owner }} Price: {{ car.car_type.price }}$
-                    <a href="{% url 'create_order' car.id %}">Add to basket</a>
-                </li>
-            {% endfor %}
-        </ul>
+             {% for car in cars %}
+                 <li>
+                     Car: {{ car.car_type.brand }} {{ car.car_type.name }} color: {{ car.color }}, year: {{ car.year }} Owner:{{ car.owner }} Price: {{ car.car_type.price }}$
+                     <a href="{% url 'create_order' car.id %}">Add to basket</a>
+                 </li>
+             {% endfor %}
+         </ul>
     </div>
-        {% if car.car_type.brand in cars == "Audi" %}
-            <button onclick="location.href='/audict/'">Назад</button>
-        {% elif car.car_type.brand in cars == "Mercedes-Benz" %}
-            <button onclick="location.href='/mercedesct/'">Назад</button>
-        {% else %}
-            <button onclick="location.href='/bmwct/'">Назад</button>
-        {% endif %}
+         {% if pk <= 8 %}
+             <button onclick="location.href='/audict/'">Назад</button>
+         {% elif pk >= 9 and pk <= 16 %}
+             <button onclick="location.href='/mercedesct/'">Назад</button>
+         {% else %}
+             <button onclick="location.href='/bmwct/'">Назад</button>
+         {% endif %}
     </body>
 </html>

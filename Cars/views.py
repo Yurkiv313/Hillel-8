@@ -49,7 +49,7 @@ def car_edit(request, pk):
     global message
     cars = Car.objects.filter(blocked_by_order_id=None)
     filtered_cars = [car for car in cars if car.car_type_id == pk]
-    return render(request, "car/car_edit_list.html", {"cars": filtered_cars})
+    return render(request, "car/car_edit_list.html", {"cars": filtered_cars, "pk": pk})
 
 
 def create_order(request, pk):
