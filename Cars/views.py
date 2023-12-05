@@ -1,11 +1,23 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.auth.views import PasswordResetView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.core.mail import send_mail
+from django.core.signing import Signer
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.contrib.auth import logout
+from django.urls import reverse, reverse_lazy
 
 from Cars.models import Client, CarType, Car, Dealership, Order, OrderQuantity
+from Cars.templates.registration.forms import UserCreationFormWithEmail
+
+
+def first(request):
+    return render(request, "registration/first.html")
 
 
 def hello(request):
-    return render(request, "hello/hello.html")
+    return render(request, "hello/hello.html", {"user": request.user})
 
 
 def car_type(request):
@@ -37,7 +49,7 @@ def car_edit(request, pk):
     global message
     cars = Car.objects.filter(blocked_by_order_id=None)
     filtered_cars = [car for car in cars if car.car_type_id == pk]
-    return render(request, "car/car_edit_list.html", {"cars": filtered_cars})
+    return render(request, "car/car_edit_list.html", {"cars": filtered_cars, "pk": pk})
 
 
 def create_order(request, pk):
@@ -100,3 +112,68 @@ def order_confirm(request):
 
 def redi(request):
     return redirect(hello)
+
+
+def register(request):
+    if request.method == "GET":
+        form = UserCreationFormWithEmail()
+        return render(request, "registration/register.html", {"form": form})
+
+    form = UserCreationFormWithEmail(request.POST)
+    if form.is_valid():
+        form.instance.is_active = False
+        form.save()
+        send_activation_email(request, form.instance)
+        return redirect("login")
+    return render(request, "registration/register.html", {"form": form})
+
+
+def send_activation_email(request, user: User):
+    user_signed = Signer().sign(user.id)
+    signed_url = request.build_absolute_uri(f"/activate/{user_signed}")
+    send_mail(
+        "Subject here",
+        "Click here to activate your account: " + signed_url,
+        "yurkivandriy02@gmail.com",
+        [user.email],
+        fail_silently=False,
+    )
+
+
+class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
+    success_message = (
+        "We've emailed you instructions for setting your password, "
+        "if an account exists with the email you entered. You should receive them shortly."
+        " If you don't receive an email, "
+        "please make sure you've entered the address you registered with, and check your spam folder."
+    )
+    success_url = reverse_lazy("login")
+
+
+def activate(request, user_signed):
+    try:
+        user_id = Signer().unsign(user_signed)
+    except BaseException:
+        return redirect("login")
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return redirect("login")
+    user.is_active = True
+    user.save()
+    return redirect("login")
+
+
+def password_reset(request):
+    return render(request, "registration/password_reset_form.html")
+
+
+def logout_view(request):
+    logout(request)
+    return redirect("first")
+
+
+@login_required
+def list_users(request):
+    users = User.objects.all()
+    return render(request, "registration/users.html", {"users": users})
