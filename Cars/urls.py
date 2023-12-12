@@ -1,5 +1,5 @@
 from django.contrib.auth.views import LoginView, PasswordResetConfirmView
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
@@ -16,9 +16,6 @@ urlpatterns = [
     path("order_cancel/", views.order_cancel, name="order_cancel"),
     path("order_confirm/", views.order_confirm, name="order_confirm"),
     path("redi/", views.redi, name="redi"),
-    path("register/", views.register, name="register"),
-    path("login/", LoginView.as_view(), name="login"),
-    path("logout/", views.logout_view, name="logout"),
     path("users/", views.list_users, name="users"),
     path("activate/<user_signed>", views.activate, name="activate"),
     path("password_reset/", views.ResetPasswordView.as_view(), name="password_reset"),
@@ -30,4 +27,5 @@ urlpatterns = [
         ),
         name="password_reset_confirm",
     ),
+    path("accounts/", include("allauth.urls")),
 ]
