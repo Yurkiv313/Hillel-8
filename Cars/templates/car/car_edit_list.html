@@ -30,6 +30,12 @@
                  </li>
              {% endfor %}
          </ul>
+    <img src="{{ car.car_type.image.url }}" alt="Image">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="image" accept="image/*">
+        <button type="submit">Add image</button>
+    </form>
     </div>
          {% if pk <= 8 %}
              <button onclick="location.href='/audict/'">Назад</button>
