@@ -4,6 +4,7 @@ from django.contrib.auth.views import PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail
 from django.core.signing import Signer
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.urls import reverse, reverse_lazy
@@ -71,6 +72,7 @@ def create_order(request, pk):
     return redirect(reverse(car_edit, args=[car.car_type_id]))
 
 
+# delete
 def remove_from_cart(request, pk):
     dealership = Dealership.objects.filter(available_car_types__car=pk).first()
 
@@ -89,6 +91,7 @@ def basket(request):
     return render(request, "basket/basket_list.html", {"cars": cars})
 
 
+# delete
 def order_cancel(request):
     orders = Order.objects.filter(client=Client.objects.first(), is_paid=False).all()
     for order in orders:
@@ -100,6 +103,7 @@ def order_cancel(request):
     return render(request, "basket/order_cancel.html")
 
 
+# put
 def order_confirm(request):
     orders = Order.objects.filter(client=Client.objects.first(), is_paid=False).all()
     for order in orders:

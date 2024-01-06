@@ -1,0 +1,257 @@
+openapi: 3.0.3
+info:
+  title: BooksStore API
+  version: 1.0.0
+  description: The books store
+paths:
+  /api-token-auth/:
+    post:
+      operationId: api_token_auth_create
+      tags:
+      - api-token-auth
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+          description: ''
+  /api/cars/:
+    get:
+      operationId: api_cars_list
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Car'
+          description: ''
+  /api/cars/type/{id}:
+    get:
+      operationId: api_cars_type_list
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Car'
+          description: ''
+  /api/cartype/:
+    get:
+      operationId: api_cartype_list
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CarType'
+          description: ''
+  /api/delete/orders/{order_id}/cars/{car_id}:
+    delete:
+      operationId: api_delete_orders_cars_destroy
+      parameters:
+      - in: path
+        name: car_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: order_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderDetail'
+          description: ''
+  /api/orders/:
+    post:
+      operationId: api_orders_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrder'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateOrder'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateOrder'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateOrder'
+          description: ''
+  /api/orders/{id}:
+    put:
+      operationId: api_orders_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/orders/get/:
+    get:
+      operationId: api_orders_get_retrieve
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderDetail'
+          description: ''
+components:
+  schemas:
+    AuthToken:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        token:
+          type: string
+          readOnly: true
+      required:
+      - password
+      - token
+      - username
+    Car:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        color:
+          type: string
+          maxLength: 50
+        year:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        car_type_id:
+          type: integer
+          readOnly: true
+      required:
+      - car_type_id
+      - color
+      - id
+      - year
+    CarType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        brand:
+          type: string
+          maxLength: 50
+        price:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+      required:
+      - brand
+      - id
+      - name
+      - price
+    CreateOrder:
+      type: object
+      properties:
+        car_id:
+          type: integer
+      required:
+      - car_id
+    OrderDetail:
+      type: object
+      properties:
+        car_id:
+          type: integer
+        order_id:
+          type: integer
+      required:
+      - car_id
+      - order_id
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"
