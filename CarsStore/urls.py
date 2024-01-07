@@ -16,8 +16,10 @@ Including another URLconf
 """
 
 from django.urls import path, include
-
+from rest_framework.authtoken import views
 
 urlpatterns = [
     path("", include("Cars.urls")),
+    path("", include("Cars.api_urls")),
+    path('api-token-auth/', views.obtain_auth_token)
 ]

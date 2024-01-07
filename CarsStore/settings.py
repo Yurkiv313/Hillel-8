@@ -38,6 +38,14 @@ SECRET_KEY = os.environ.get(
     default=secrets.token_urlsafe(nbytes=64),
 )
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+            'rest_framework.authentication.TokenAuthentication',
+        ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+
 # The `DYNO` env var is set on Heroku CI, but it's not a real Heroku app, so we have to
 # also explicitly exclude CI:
 # https://devcenter.heroku.com/articles/heroku-ci#immutable-environment-variables
@@ -74,7 +82,21 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    "drf_spectacular",
+    "drf_spectacular_sidecar",
+    "rest_framework",
+    'rest_framework.authtoken',
 ]
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "BooksStore API",
+    "DESCRIPTION": "The books store",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_DIST": "SIDECAR",
+    "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
+    "REDOC_DIST": "SIDECAR",
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
