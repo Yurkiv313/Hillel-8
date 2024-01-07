@@ -9,6 +9,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.urls import reverse, reverse_lazy
 
+from Cars.forms import CarTypeForm
 from Cars.models import Client, CarType, Car, Dealership, Order, OrderQuantity
 from Cars.templates.registration.forms import UserCreationFormWithEmail
 
@@ -47,6 +48,11 @@ def mercedes_car_type(request):
 
 
 def car_edit(request, pk):
+    if request.method == 'POST':
+        car_type = CarType.objects.get(id=pk)
+        form = CarTypeForm(request.POST, request.FILES, instance=car_type)
+        if form.is_valid():
+            form.save()
     global message
     cars = Car.objects.filter(blocked_by_order_id=None)
     filtered_cars = [car for car in cars if car.car_type_id == pk]
