@@ -2,11 +2,20 @@ from django.http import JsonResponse
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from rest_framework.utils import json
+from rest_framework.views import APIView
 
-from Cars.models import CarType, Car, Dealership, Client, Order, OrderQuantity
-from Cars.serializer.serializers import CarTypeSerializer, CarSerializer, CreateOrderSerializer, OrderDetailSerializer, \
-    OrderUpdateSerializer
+from Cars.invoices import create_invoice, verify_signature
+from Cars.models import CarType, Car, Dealership, Order, OrderQuantity
+from Cars.serializer.serializers import (
+    CarTypeSerializer,
+    CarSerializer,
+    CreateOrderSerializer,
+    OrderDetailSerializer,
+    OrderUpdateSerializer,
+)
 
 
 @extend_schema(request=CarTypeSerializer, responses={200: CarTypeSerializer(many=True)})
@@ -48,10 +57,8 @@ class CreateOrderViews(viewsets.ModelViewSet):
         data = json.loads(request.body)
         car_id = data.get("car_id")
         dealership = Dealership.objects.filter(available_car_types__car=car_id).first()
-        client = Client.objects.first()
-        order = Order.objects.create(
-            client=client, dealership=dealership, is_paid=False
-        )
+        client = request.user
+        order = Order.objects.create(client=client, dealership=dealership, is_paid=False)
 
         car = Car.objects.filter(id=car_id).first()
         OrderQuantity.objects.create(car=car, order=order)
@@ -64,7 +71,13 @@ class CreateOrderViews(viewsets.ModelViewSet):
         car.save()
 
         return JsonResponse(
-            {"order_id": order.id, "car_id": car_id, "dealership_id": dealership.id, "client_id": client.id}, safe=False
+            {
+                "order_id": order.id,
+                "car_id": car_id,
+                "dealership_id": dealership.id,
+                "client_id": client.id,
+            },
+            safe=False,
         )
 
 
@@ -98,5 +111,26 @@ class OrderUpdateViews(viewsets.ModelViewSet):
         for order_q in order_quantities:
             Car.objects.filter(id=order_q.car.id).update(blocked_by_order=None, owner=None)
 
-        Order.objects.filter(id=pk, is_paid=False).update(is_paid=True)
-        return JsonResponse({"message": f"Order with id {pk} paid successfully"}, safe=False)
+        order = Order.objects.get(id=pk)
+        invoice_url = create_invoice(order, reverse("webhook-mono", request=request))
+        return Response({"invoice_url": invoice_url})
+
+
+class MonoAcquiringWebhookReceiver(APIView):
+    serializer_class = OrderUpdateSerializer
+
+    def post(self, request):
+        try:
+            verify_signature(request)
+        except Exception as e:
+            return Response({"status": "error"}, status=400)
+        reference = request.data.get("reference")
+        order = Order.objects.get(id=reference)
+        if order.order_id != request.data.get("invoiceId"):
+            return Response({"status": "error"}, status=400)
+        order_status = request.data.get("status", "error")
+        if order_status.lower() in ["ok", "200"]:
+            Order.objects.filter(id=reference, is_paid=False).update(is_paid=True)
+        order.status = order_status
+        order.save()
+        return Response({"status": "ok"})

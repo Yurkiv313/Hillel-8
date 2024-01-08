@@ -171,6 +171,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/OrderDetail'
           description: ''
+  /webhook-mono/:
+    post:
+      operationId: webhook_mono_create
+      tags:
+      - webhook-mono
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
 components:
   schemas:
     AuthToken:

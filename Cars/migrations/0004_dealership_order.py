@@ -25,15 +25,11 @@ class Migration(migrations.Migration):
                 ("name", models.CharField(max_length=50)),
                 (
                     "available_car_types",
-                    models.ManyToManyField(
-                        related_name="dealerships", to="Cars.cartype"
-                    ),
+                    models.ManyToManyField(related_name="dealerships", to="Cars.cartype"),
                 ),
                 (
                     "clients",
-                    models.ManyToManyField(
-                        related_name="dealerships", to="Cars.client"
-                    ),
+                    models.ManyToManyField(related_name="dealerships", to="Cars.client"),
                 ),
             ],
         ),
