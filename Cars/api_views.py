@@ -120,6 +120,7 @@ class MonoAcquiringWebhookReceiver(APIView):
     serializer_class = OrderUpdateSerializer
 
     def post(self, request):
+        print("webhook", request)
         try:
             reference = request.data.get("reference")
             Order.objects.filter(id=reference, is_paid=False).update(is_paid=True)
