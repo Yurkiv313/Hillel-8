@@ -121,16 +121,19 @@ class MonoAcquiringWebhookReceiver(APIView):
 
     def post(self, request):
         try:
+            reference = request.data.get("reference")
+            Order.objects.filter(id=reference, is_paid=False).update(is_paid=True)
+
             verify_signature(request)
         except Exception as e:
             return Response({"status": "error"}, status=400)
-        reference = request.data.get("reference")
-        order = Order.objects.get(id=reference)
-        if order.order_id != request.data.get("invoiceId"):
-            return Response({"status": "error"}, status=400)
-        order_status = request.data.get("status", "error")
-        if order_status.lower() in ["ok", "200"]:
-            Order.objects.filter(id=reference, is_paid=False).update(is_paid=True)
-        order.status = order_status
-        order.save()
+        # reference = request.data.get("reference")
+        # # order = Order.objects.get(id=reference)
+        # # if order.order_id != request.data.get("invoiceId"):
+        # #     return Response({"status": "error"}, status=400)
+        # order_status = request.data.get("status", "error")
+        # if order_status.lower() in ["ok", "200"]:
+        #     Order.objects.filter(id=reference, is_paid=False).update(is_paid=True)
+        # # order.status = order_status
+        # order.save()
         return Response({"status": "ok"})
