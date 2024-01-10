@@ -44,7 +44,7 @@ order_get = OrderDetailViews.as_view({"get": "get_cars_by_basket"})
 
 order_delete = OrderDetailViews.as_view({"delete": "remove_cars_from_basket"})
 
-order_id_confirm = OrderUpdateViews.as_view({"put": "order_id_confirm"})
+order_id_confirm = OrderUpdateViews.as_view({"post": "order_id_confirm"})
 
 
 urlpatterns = [

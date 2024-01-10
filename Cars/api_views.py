@@ -104,7 +104,7 @@ class OrderDetailViews(viewsets.ModelViewSet):
 class OrderUpdateViews(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    @action(detail=True, methods=["put"])
+    @action(detail=True, methods=["post"])
     def order_id_confirm(self, request, pk):
         order_quantities = OrderQuantity.objects.filter(order_id=pk).all()
 
@@ -120,14 +120,19 @@ class MonoAcquiringWebhookReceiver(APIView):
     serializer_class = OrderUpdateSerializer
 
     def post(self, request):
-        print("webhook", request)
         try:
+            print("Webhook received:", request.data)
+            print("Webhook body:", request.body)
+            print("Webhook headers:", request.headers)
+
             reference = request.data.get("reference")
             Order.objects.filter(id=reference, is_paid=False).update(is_paid=True)
-
             verify_signature(request)
         except Exception as e:
+            print(f"Error processing webhook: {e}")
             return Response({"status": "error"}, status=400)
+        return Response({"status": "ok"})
+
         # reference = request.data.get("reference")
         # # order = Order.objects.get(id=reference)
         # # if order.order_id != request.data.get("invoiceId"):
@@ -137,4 +142,3 @@ class MonoAcquiringWebhookReceiver(APIView):
         #     Order.objects.filter(id=reference, is_paid=False).update(is_paid=True)
         # # order.status = order_status
         # order.save()
-        return Response({"status": "ok"})

@@ -83,4 +83,5 @@ def create_invoice(order: Order, webhook_url):
     r.raise_for_status()
     order.id = r.json()["invoiceId"]
     order.invoice_url = r.json()["pageUrl"]
+    print(f"Webhook created. Invoice URL: {order.invoice_url}")
     return order.invoice_url
