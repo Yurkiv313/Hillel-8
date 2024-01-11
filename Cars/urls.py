@@ -1,11 +1,12 @@
-from django.contrib.auth.views import LoginView, PasswordResetConfirmView
+from django.contrib.auth.views import PasswordResetConfirmView
 from django.urls import path, include
 from . import views
+
 
 urlpatterns = [
     path("", views.first, name="first"),
     path("hello/", views.hello, name="hello"),
-    path("cartype/", views.car_type, name="car_type"),
+    path("cartype/", views.car_type, name="cartypes"),
     path("car/", views.car, name="car"),
     path("audict/", views.audi_car_type, name="audi_car_type"),
     path("bmwct/", views.bmw_car_type, name="bmw_car_type"),
