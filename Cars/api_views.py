@@ -58,7 +58,9 @@ class CreateOrderViews(viewsets.ModelViewSet):
         car_id = data.get("car_id")
         dealership = Dealership.objects.filter(available_car_types__car=car_id).first()
         client = request.user
-        order = Order.objects.create(client=client, dealership=dealership, is_paid=False)
+        order = Order.objects.create(
+            client=client, dealership=dealership, is_paid=False
+        )
 
         car = Car.objects.filter(id=car_id).first()
         OrderQuantity.objects.create(car=car, order=order)
@@ -97,7 +99,9 @@ class OrderDetailViews(viewsets.ModelViewSet):
         car = Car.objects.filter(id=car_id).first()
         OrderQuantity.objects.filter(car=car_id, order=order_id).delete()
         Car.objects.get(id=car_id).unblock()
-        return JsonResponse({"message": f"Car with id {car_id} deleted successfully"}, safe=False)
+        return JsonResponse(
+            {"message": f"Car with id {car_id} deleted successfully"}, safe=False
+        )
 
 
 @extend_schema(request=OrderUpdateSerializer, responses={200: OrderUpdateSerializer()})
@@ -109,7 +113,9 @@ class OrderUpdateViews(viewsets.ModelViewSet):
         order_quantities = OrderQuantity.objects.filter(order_id=pk).all()
 
         for order_q in order_quantities:
-            Car.objects.filter(id=order_q.car.id).update(blocked_by_order=None, owner=None)
+            Car.objects.filter(id=order_q.car.id).update(
+                blocked_by_order=None, owner=None
+            )
 
         order = Order.objects.get(id=pk)
         invoice_url = create_invoice(order, reverse("webhook-mono", request=request))
@@ -120,14 +126,28 @@ class MonoAcquiringWebhookReceiver(APIView):
     serializer_class = OrderUpdateSerializer
 
     def post(self, request):
-        print("webhook", request)
         try:
+            print("Webhook received 1:", request.data)
+            print("Webhook body 1:", request.body)
+            print("Webhook headers 1:", request.headers)
+
             reference = request.data.get("reference")
-            Order.objects.filter(id=reference, is_paid=False).update(is_paid=True)
+            print(f"Reference: {reference}")
+
+            order_to_update = Order.objects.filter(id=reference).first()
+            if order_to_update:
+                print("Order found for update:", order_to_update)
+                Order.objects.filter(id=reference).update(is_paid=True)
+                print("Order updated successfully.")
+            else:
+                print("Order not found for update.")
 
             verify_signature(request)
         except Exception as e:
+            print(f"Error processing webhook: {e}")
             return Response({"status": "error"}, status=400)
+        return Response({"status": "ok"})
+
         # reference = request.data.get("reference")
         # # order = Order.objects.get(id=reference)
         # # if order.order_id != request.data.get("invoiceId"):
@@ -137,4 +157,3 @@ class MonoAcquiringWebhookReceiver(APIView):
         #     Order.objects.filter(id=reference, is_paid=False).update(is_paid=True)
         # # order.status = order_status
         # order.save()
-        return Response({"status": "ok"})

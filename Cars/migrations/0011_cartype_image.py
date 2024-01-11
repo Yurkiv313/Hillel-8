@@ -12,6 +12,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="cartype",
             name="image",
-            field=models.ImageField(blank=True, upload_to="arn:aws:s3:::hillel-carstore"),
+            field=models.ImageField(
+                blank=True, upload_to="arn:aws:s3:::hillel-carstore"
+            ),
         ),
     ]

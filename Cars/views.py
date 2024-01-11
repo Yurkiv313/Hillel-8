@@ -101,9 +101,9 @@ def basket(request):
 def order_cancel(request):
     orders = Order.objects.filter(client=Client.objects.first(), is_paid=False).all()
     for order in orders:
-        Car.objects.filter(owner_id__isnull=False, blocked_by_order_id__isnull=False).update(
-            blocked_by_order_id=None, owner_id=None
-        )
+        Car.objects.filter(
+            owner_id__isnull=False, blocked_by_order_id__isnull=False
+        ).update(blocked_by_order_id=None, owner_id=None)
         order.delete()
 
     return render(request, "basket/order_cancel.html")
@@ -113,9 +113,9 @@ def order_cancel(request):
 def order_confirm(request):
     orders = Order.objects.filter(client=Client.objects.first(), is_paid=False).all()
     for order in orders:
-        Car.objects.filter(owner_id__isnull=False, blocked_by_order_id__isnull=False).update(
-            blocked_by_order_id=None, owner_id=None
-        )
+        Car.objects.filter(
+            owner_id__isnull=False, blocked_by_order_id__isnull=False
+        ).update(blocked_by_order_id=None, owner_id=None)
         order.delete()
     return render(request, "basket/order_confirm.html")
 
