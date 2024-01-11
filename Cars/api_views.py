@@ -104,7 +104,7 @@ class OrderDetailViews(viewsets.ModelViewSet):
 class OrderUpdateViews(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    @action(detail=True, methods=["post"])
+    @action(detail=True, methods=["put"])
     def order_id_confirm(self, request, pk):
         order_quantities = OrderQuantity.objects.filter(order_id=pk).all()
 
@@ -126,8 +126,16 @@ class MonoAcquiringWebhookReceiver(APIView):
             print("Webhook headers 1:", request.headers)
 
             reference = request.data.get("reference")
-            Order.objects.filter(id=reference).update(is_paid=True)
-            print("PAID CONFIRM")
+            print(f"Reference: {reference}")
+
+            order_to_update = Order.objects.filter(id=reference).first()
+            if order_to_update:
+                print("Order found for update:", order_to_update)
+                Order.objects.filter(id=reference).update(is_paid=True)
+                print("Order updated successfully.")
+            else:
+                print("Order not found for update.")
+
             verify_signature(request)
         except Exception as e:
             print(f"Error processing webhook: {e}")
