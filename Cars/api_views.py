@@ -121,12 +121,13 @@ class MonoAcquiringWebhookReceiver(APIView):
 
     def post(self, request):
         try:
-            print("Webhook received:", request.data)
-            print("Webhook body:", request.body)
-            print("Webhook headers:", request.headers)
+            print("Webhook received 1:", request.data)
+            print("Webhook body 1:", request.body)
+            print("Webhook headers 1:", request.headers)
 
             reference = request.data.get("reference")
-            Order.objects.filter(id=reference, is_paid=False).update(is_paid=True)
+            Order.objects.filter(id=reference).update(is_paid=True)
+            print("PAID CONFIRM")
             verify_signature(request)
         except Exception as e:
             print(f"Error processing webhook: {e}")
