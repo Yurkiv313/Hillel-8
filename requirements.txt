@@ -13,6 +13,8 @@ psycopg[binary]; sys_platform != "linux"
 
 django-allauth==0.58.2
 django-storages==1.14.2
+django-allauth==0.58.2
+django-storages==1.14.2
 boto3==1.34.1
 botocore==1.34.1
 jmespath==1.0.1
