@@ -58,7 +58,9 @@ class CreateOrderViews(viewsets.ModelViewSet):
         car_id = data.get("car_id")
         dealership = Dealership.objects.filter(available_car_types__car=car_id).first()
         client = request.user
-        order = Order.objects.create(client=client, dealership=dealership, is_paid=False)
+        order = Order.objects.create(
+            client=client, dealership=dealership, is_paid=False
+        )
 
         car = Car.objects.filter(id=car_id).first()
         OrderQuantity.objects.create(car=car, order=order)
@@ -97,7 +99,9 @@ class OrderDetailViews(viewsets.ModelViewSet):
         car = Car.objects.filter(id=car_id).first()
         OrderQuantity.objects.filter(car=car_id, order=order_id).delete()
         Car.objects.get(id=car_id).unblock()
-        return JsonResponse({"message": f"Car with id {car_id} deleted successfully"}, safe=False)
+        return JsonResponse(
+            {"message": f"Car with id {car_id} deleted successfully"}, safe=False
+        )
 
 
 @extend_schema(request=OrderUpdateSerializer, responses={200: OrderUpdateSerializer()})
@@ -109,7 +113,9 @@ class OrderUpdateViews(viewsets.ModelViewSet):
         order_quantities = OrderQuantity.objects.filter(order_id=pk).all()
 
         for order_q in order_quantities:
-            Car.objects.filter(id=order_q.car.id).update(blocked_by_order=None, owner=None)
+            Car.objects.filter(id=order_q.car.id).update(
+                blocked_by_order=None, owner=None
+            )
 
         order = Order.objects.get(id=pk)
         invoice_url = create_invoice(order, reverse("webhook-mono", request=request))

@@ -29,8 +29,12 @@ class Dealership(models.Model):
 
 
 class Order(models.Model):
-    client = models.ForeignKey("auth.User", related_name="orders", on_delete=models.CASCADE)
-    dealership = models.ForeignKey(Dealership, on_delete=models.CASCADE, related_name="orders")
+    client = models.ForeignKey(
+        "auth.User", related_name="orders", on_delete=models.CASCADE
+    )
+    dealership = models.ForeignKey(
+        Dealership, on_delete=models.CASCADE, related_name="orders"
+    )
     is_paid = models.BooleanField(default=False)
 
 
@@ -38,7 +42,9 @@ class Car(models.Model):
     car_type = models.ForeignKey(CarType, on_delete=models.CASCADE)
     color = models.CharField(max_length=50)
     year = models.IntegerField()
-    owner = models.ForeignKey("auth.User", related_name="cars", on_delete=models.CASCADE, null=True)
+    owner = models.ForeignKey(
+        "auth.User", related_name="cars", on_delete=models.CASCADE, null=True
+    )
     blocked_by_order = models.ForeignKey(
         Order, on_delete=models.SET_NULL, null=True, related_name="blocked_cars"
     )
@@ -62,7 +68,9 @@ class Car(models.Model):
 
 
 class OrderQuantity(models.Model):
-    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name="order_quantities")
+    car = models.ForeignKey(
+        Car, on_delete=models.CASCADE, related_name="order_quantities"
+    )
     quantity = models.PositiveIntegerField(default=1)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="car_types")
 
