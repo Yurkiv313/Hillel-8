@@ -21,5 +21,5 @@ from rest_framework.authtoken import views
 urlpatterns = [
     path("", include("Cars.urls")),
     path("", include("Cars.api_urls")),
-    path('api-token-auth/', views.obtain_auth_token)
+    path("api-token-auth/", views.obtain_auth_token),
 ]

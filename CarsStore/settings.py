@@ -39,9 +39,9 @@ SECRET_KEY = os.environ.get(
 )
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-            'rest_framework.authentication.TokenAuthentication',
-        ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
@@ -85,7 +85,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "drf_spectacular_sidecar",
     "rest_framework",
-    'rest_framework.authtoken',
+    "rest_framework.authtoken",
 ]
 
 SPECTACULAR_SETTINGS = {
@@ -261,3 +261,5 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+MONOBANK_TOKEN = os.getenv("MONOBANK_TOKEN")

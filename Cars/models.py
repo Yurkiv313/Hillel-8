@@ -30,10 +30,8 @@ class Dealership(models.Model):
 
 
 class Order(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="orders")
-    dealership = models.ForeignKey(
-        Dealership, on_delete=models.CASCADE, related_name="orders"
-    )
+    client = models.ForeignKey("auth.User", related_name="orders", on_delete=models.CASCADE)
+    dealership = models.ForeignKey(Dealership, on_delete=models.CASCADE, related_name="orders")
     is_paid = models.BooleanField(default=False)
 
 
@@ -41,9 +39,7 @@ class Car(models.Model):
     car_type = models.ForeignKey(CarType, on_delete=models.CASCADE)
     color = models.CharField(max_length=50)
     year = models.IntegerField()
-    owner = models.ForeignKey(
-        Client, on_delete=models.SET_NULL, null=True, related_name="cars"
-    )
+    owner = models.ForeignKey("auth.User", related_name="cars", on_delete=models.CASCADE, null=True)
     blocked_by_order = models.ForeignKey(
         Order, on_delete=models.SET_NULL, null=True, related_name="blocked_cars"
     )
@@ -67,8 +63,22 @@ class Car(models.Model):
 
 
 class OrderQuantity(models.Model):
-    car = models.ForeignKey(
-        Car, on_delete=models.CASCADE, related_name="order_quantities"
-    )
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name="order_quantities")
     quantity = models.PositiveIntegerField(default=1)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="car_types")
+
+
+class MonoSettings(models.Model):
+    public_key = models.CharField(max_length=100, unique=True)
+    received_at = models.DateTimeField(auto_now_add=True)
+
+    @classmethod
+    def create_new(cls, get_monobank_public_key_callback):
+        return cls.objects.create(public_key=get_monobank_public_key_callback())
+
+    @classmethod
+    def get_latest_or_add(cls, get_monobank_public_key_callback):
+        latest = cls.objects.order_by("-received_at").first()
+        if not latest:
+            latest = cls.create_new(get_monobank_public_key_callback)
+        return latest
