@@ -46,7 +46,6 @@ order_delete = OrderDetailViews.as_view({"delete": "remove_cars_from_basket"})
 order_id_confirm = OrderUpdateViews.as_view({"put": "order_id_confirm"})
 
 
-
 urlpatterns = [
     path("api/cartype/", cartypes, name="cartypes"),
     path("api/cars/", cars, name="cars"),

@@ -1,23 +1,11 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'styles_cars.css' %}"><!DOCTYPE html>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<style>
-        body{
-            background: bisque;
-        }
-        button{
-            text-align: right;
-            color: black;
-            background: cadetblue;
-        }
-        #basket{
-            color: white;
-            background: navy;
-        }
-    </style>
     <div>
         <button id="basket" onclick="location.href='/basket'">Basket</button>
     </div>

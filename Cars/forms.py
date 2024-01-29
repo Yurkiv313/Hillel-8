@@ -18,4 +18,4 @@ class OrderQuantityForm(forms.ModelForm):
 class CarTypeForm(forms.ModelForm):
     class Meta:
         model = CarType
-        fields = ['image']
+        fields = ["image"]
