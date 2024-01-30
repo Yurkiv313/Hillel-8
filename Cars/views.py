@@ -48,7 +48,7 @@ def mercedes_car_type(request):
 
 
 def car_edit(request, pk):
-    if request.method == 'POST':
+    if request.method == "POST":
         car_type = CarType.objects.get(id=pk)
         form = CarTypeForm(request.POST, request.FILES, instance=car_type)
         if form.is_valid():
@@ -61,7 +61,7 @@ def car_edit(request, pk):
 
 def create_order(request, pk):
     dealership = Dealership.objects.filter(available_car_types__car=pk).first()
-    client = Client.objects.first()
+    client = request.user
     order, creator = Order.objects.get_or_create(
         client=client, dealership=dealership, is_paid=False
     )
@@ -73,7 +73,7 @@ def create_order(request, pk):
     car.blocked_by_order = order
     car.save()
 
-    car.owner = client
+    car.owner = order.client
     car.save()
     return redirect(reverse(car_edit, args=[car.car_type_id]))
 
@@ -99,7 +99,7 @@ def basket(request):
 
 # delete
 def order_cancel(request):
-    orders = Order.objects.filter(client=Client.objects.first(), is_paid=False).all()
+    orders = Order.objects.filter(client=request.user, is_paid=False).all()
     for order in orders:
         Car.objects.filter(
             owner_id__isnull=False, blocked_by_order_id__isnull=False
@@ -111,7 +111,7 @@ def order_cancel(request):
 
 # put
 def order_confirm(request):
-    orders = Order.objects.filter(client=Client.objects.first(), is_paid=False).all()
+    orders = Order.objects.filter(client=request.user, is_paid=False).all()
     for order in orders:
         Car.objects.filter(
             owner_id__isnull=False, blocked_by_order_id__isnull=False

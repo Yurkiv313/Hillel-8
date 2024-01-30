@@ -14,7 +14,7 @@ class CarType(models.Model):
     name = models.CharField(max_length=50)
     brand = models.CharField(max_length=50)
     price = models.PositiveIntegerField()
-    image = models.ImageField(upload_to='arn:aws:s3:::hillel-carstore', blank=True)
+    image = models.ImageField(upload_to="arn:aws:s3:::hillel-carstore", blank=True)
 
     def __str__(self):
         return self.name
