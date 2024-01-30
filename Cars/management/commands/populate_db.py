@@ -37,7 +37,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write(self.style.SUCCESS("Starting database population..."))
 
-        # Очистка існуючих записів
         Car.objects.all().delete()
         CarType.objects.all().delete()
         Dealership.objects.all().delete()
@@ -46,7 +45,6 @@ class Command(BaseCommand):
             brand = car_type_data["brand"]
             dealership_name = car_type_data["dealership"]
 
-            # Створення дилершіпу для бренду, якщо його ще не існує
             dealership, _ = Dealership.objects.get_or_create(name=dealership_name)
 
             for model in car_type_data["models"]:
@@ -56,7 +54,6 @@ class Command(BaseCommand):
                     price=fake.random_int(min=10000, max=30000),
                 )
 
-                # Додавання типу автомобіля до доступних для дилершіпу
                 dealership.available_car_types.add(car_type)
 
                 for _ in range(5):
