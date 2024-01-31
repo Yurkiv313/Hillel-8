@@ -15,8 +15,11 @@ import secrets
 from pathlib import Path
 import ssl
 import urllib.request
+from dotenv import load_dotenv
 
 import dj_database_url
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -222,7 +225,7 @@ STORAGES = {
 LOGIN_REDIRECT_URL = "/hello/"
 LOGIN_URL = "/login/"
 
-SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
 EMAIL_HOST = "smtp.sendgrid.net"
 EMAIL_HOST_USER = "apikey"
 EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
@@ -238,8 +241,8 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
-GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
@@ -262,4 +265,4 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-MONOBANK_TOKEN = os.getenv("MONOBANK_TOKEN")
+MONOBANK_TOKEN = os.environ.get("MONOBANK_TOKEN")
