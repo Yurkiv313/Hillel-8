@@ -7,6 +7,7 @@ from rest_framework.reverse import reverse
 from rest_framework.utils import json
 from rest_framework.views import APIView
 
+from Cars.pagination.limited_pagination import LimitedPagination
 from Cars.invoices import create_invoice, verify_signature
 from Cars.models import CarType, Car, Dealership, Order, OrderQuantity
 from Cars.serializer.serializers import (
@@ -21,6 +22,7 @@ from Cars.serializer.serializers import (
 @extend_schema(request=CarTypeSerializer, responses={200: CarTypeSerializer(many=True)})
 class CarTypeViews(viewsets.ModelViewSet):
     queryset = CarType.objects.all()
+    pagination_class = LimitedPagination
 
     @action(detail=False)
     def get_car_type(self, request):
@@ -32,6 +34,7 @@ class CarTypeViews(viewsets.ModelViewSet):
 @extend_schema(request=CarSerializer, responses={200: CarSerializer(many=True)})
 class CarViews(viewsets.ModelViewSet):
     queryset = Car.objects.all()
+    pagination_class = LimitedPagination
 
     @action(detail=False)
     def get_cars(self, request):
