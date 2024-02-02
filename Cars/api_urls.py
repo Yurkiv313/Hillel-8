@@ -4,6 +4,7 @@ from Cars import api_views
 from Cars.api_views import (
     CarTypeViews,
     CarViews,
+    DealershipViews,
     CreateOrderViews,
     OrderDetailViews,
     OrderUpdateViews,
@@ -13,6 +14,24 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+
+car_types_search_by_name = CarTypeViews.as_view(
+    {
+        "get": "search_car_types_by_name"
+    }
+)
+cars_search_by_name = CarViews.as_view(
+    {
+        "get": "search_cars_by_name"
+    }
+)
+dealerships_search_by_name = DealershipViews.as_view(
+    {
+        "get": "search_dealerships_by_name"
+    }
+)
+
+
 
 
 cartypes = CarTypeViews.as_view(
@@ -47,8 +66,12 @@ order_id_confirm = OrderUpdateViews.as_view({"put": "order_id_confirm"})
 
 
 urlpatterns = [
-    path("api/cartype/", cartypes, name="cartypes"),
-    path("api/cars/", cars, name="cars"),
+    path("api/cartype/", CarTypeViews.as_view({"get": "list"}), name="car_types_list"),
+    path("api/cartype/search/", car_types_search_by_name, name="search_car_types_by_name"),
+    path("api/cars/", CarViews.as_view({"get": "list"}), name="cars_list"),
+    path("api/cars/search/", cars_search_by_name, name="search_cars_by_name"),
+path("api/dealerships/", DealershipViews.as_view({"get": "list"}), name="dealerships_list"),
+    path("api/dealerships/search/", dealerships_search_by_name, name="search_dealerships_by_name"),
     path("api/cars/type/<int:pk>", get_car_by_cartype_id, name="get_car_by_cartype_id"),
     path("api/orders/", create_order, name="create_order"),
     path("api/orders/get/", order_get, name="order_get"),

@@ -16,13 +16,22 @@ from Cars.serializer.serializers import (
     CreateOrderSerializer,
     OrderDetailSerializer,
     OrderUpdateSerializer,
+    DealershipSerializer,
 )
 
 
 @extend_schema(request=CarTypeSerializer, responses={200: CarTypeSerializer(many=True)})
 class CarTypeViews(viewsets.ModelViewSet):
     queryset = CarType.objects.all()
+    serializer_class = CarTypeSerializer
     pagination_class = LimitedPagination
+
+    @action(detail=False)
+    def search_car_types_by_name(self, request):
+        name_query = self.request.query_params.get('name', '')
+        car_types = CarType.objects.filter(name__icontains=name_query)
+        serializer = CarTypeSerializer(car_types, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
     @action(detail=False)
     def get_car_type(self, request):
@@ -34,7 +43,15 @@ class CarTypeViews(viewsets.ModelViewSet):
 @extend_schema(request=CarSerializer, responses={200: CarSerializer(many=True)})
 class CarViews(viewsets.ModelViewSet):
     queryset = Car.objects.all()
+    serializer_class = CarSerializer
     pagination_class = LimitedPagination
+
+    @action(detail=False)
+    def search_cars_by_name(self, request):
+        name_query = self.request.query_params.get('name', '')
+        cars = Car.objects.filter(car_type__name__icontains=name_query)
+        serializer = CarSerializer(cars, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
     @action(detail=False)
     def get_cars(self, request):
@@ -48,6 +65,19 @@ class CarViews(viewsets.ModelViewSet):
         cars = Car.objects.filter(blocked_by_order_id=None, car_type_id=pk)
         filtered_cars = [car for car in cars if car.car_type_id == pk]
         serializer = CarSerializer(filtered_cars, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+
+class DealershipViews(viewsets.ModelViewSet):
+    queryset = Dealership.objects.all()
+    serializer_class = DealershipSerializer
+    pagination_class = LimitedPagination
+
+    @action(detail=False)
+    def search_dealerships_by_name(self, request):
+        name_query = self.request.query_params.get('name', '')
+        dealerships = Dealership.objects.filter(name__icontains=name_query)
+        serializer = DealershipSerializer(dealerships, many=True)
         return JsonResponse(serializer.data, safe=False)
 
 

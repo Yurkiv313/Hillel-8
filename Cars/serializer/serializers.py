@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from Cars.models import CarType, Car
+from Cars.models import CarType, Car, Dealership
 
 
 class CarTypeSerializer(serializers.HyperlinkedModelSerializer):
@@ -25,3 +25,9 @@ class OrderDetailSerializer(serializers.Serializer):
 
 class OrderUpdateSerializer(serializers.Serializer):
     pass
+
+
+class DealershipSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dealership
+        fields = '__all__'
